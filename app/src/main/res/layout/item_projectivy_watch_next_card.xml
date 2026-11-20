@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardProjectivyWatchNextRoot"
+    android:layout_width="192dp"
+    android:layout_height="108dp"
+    android:clickable="true"
+    android:clipChildren="true"
+    android:clipToPadding="false"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/ivProjectivyWatchNextThumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Thumbnail Watch Next"
+        android:scaleType="centerCrop" />
+
+    <!-- Scrim bawah halus untuk judul program Watch Next -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_projectivy_bottom_scrim" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="9dp">
+
+        <TextView
+            android:id="@+id/tvProjectivyWatchNextTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-bold"
+            android:maxLines="1"
+            android:shadowColor="#EE000000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="4"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            tools:text="Judul Konten" />
+
+        <TextView
+            android:id="@+id/tvProjectivyWatchNextSubtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:textColor="#CBD5E1"
+            android:textSize="9.5sp"
+            tools:text="Sumber" />
+    </LinearLayout>
+
+    <!-- Progress bar tipis di tepi bawah thumbnail seperti Referensi 1 -->
+    <FrameLayout
+        android:id="@+id/layoutProjectivyWatchNextProgressTrack"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_gravity="bottom"
+        android:background="#4DFFFFFF"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/viewProjectivyWatchNextProgress"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/viewProjectivyWatchNextFocusBorder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+</FrameLayout>

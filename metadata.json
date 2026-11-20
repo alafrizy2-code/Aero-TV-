@@ -1,0 +1,6 @@
+{
+  "name": "Aero TV",
+  "description": "Minimalist Android TV launcher for B866F Android 14 Google TV with compact app dock, live European football schedule in WIB, real-time weather and clock, custom dynamic wallpapers, voice search, and remote navigation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

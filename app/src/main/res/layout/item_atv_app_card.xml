@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/atvCardRoot"
+    android:layout_width="264dp"
+    android:layout_height="152dp"
+    android:clickable="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:focusable="true">
+
+    <!-- Kontainer Kartu Berwarna Modern sesuai Referensi ATV Launcher -->
+    <FrameLayout
+        android:id="@+id/atvCardContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Kilau atas tipis agar kartu berwarna terlihat modern -->
+        <View
+            android:id="@+id/viewAtvCardSheen"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_gravity="top" />
+
+        <!-- Konten Horizontal: Ikon Aplikasi di Kiri + Nama Aplikasi di Kanan -->
+        <LinearLayout
+            android:id="@+id/layoutAtvCardContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="14dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/ivAtvCardIcon"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:id="@+id/tvAtvCardName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="11dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="start|center_vertical"
+                android:lineSpacingExtra="1dp"
+                android:maxLines="2"
+                android:shadowColor="#66000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                tools:text="ATV Launcher" />
+        </LinearLayout>
+
+        <!-- Lencana kecil indikator Favorit saat aplikasi disematkan -->
+        <TextView
+            android:id="@+id/tvAtvCardFavBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="7dp"
+            android:text="★"
+            android:textColor="#CCFFFFFF"
+            android:textSize="9sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <!-- Bingkai Fokus D-Pad Tegas -->
+    <View
+        android:id="@+id/viewAtvCardFocusBorder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+</FrameLayout>

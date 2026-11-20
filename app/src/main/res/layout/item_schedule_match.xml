@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemMatchContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/bg_schedule_match_focus"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingTop="6dp"
+    android:paddingEnd="10dp"
+    android:paddingBottom="6dp">
+
+    <!-- Logo Klub A 28px -->
+    <ImageView
+        android:id="@+id/ivHomeLogo"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:contentDescription="Home Logo"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/ic_football" />
+
+    <!-- Singkatan 3 huruf kapital Klub A (contoh: ARS) -->
+    <TextView
+        android:id="@+id/tvHomeAbbr"
+        android:layout_width="38dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="ARS" />
+
+    <!-- VS kecil di tengah -->
+    <TextView
+        android:id="@+id/tvVs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="VS"
+        android:textColor="#94A3B8"
+        android:textSize="10sp" />
+
+    <!-- Singkatan 3 huruf kapital Klub B (contoh: CHE) -->
+    <TextView
+        android:id="@+id/tvAwayAbbr"
+        android:layout_width="38dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="CHE" />
+
+    <!-- Logo Klub B 28px -->
+    <ImageView
+        android:id="@+id/ivAwayLogo"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="6dp"
+        android:contentDescription="Away Logo"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/ic_football" />
+
+    <!-- Spacer fleksibel agar jam menempel di sebelah KANAN klub secara rata kanan dan sejajar -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+    <!-- Jam WAJIB di sebelah KANAN klub, dalam 1 baris yang sama, rata kanan, semua jam sejajar lurus format WIB (contoh: 22:00 WIB) -->
+    <TextView
+        android:id="@+id/tvMatchTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-bold"
+        android:gravity="end"
+        android:textColor="#FFFFFF"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        tools:text="22:00 WIB" />
+
+</LinearLayout>

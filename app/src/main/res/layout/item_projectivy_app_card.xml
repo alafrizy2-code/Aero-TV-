@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardProjectivyAppRoot"
+    android:layout_width="136dp"
+    android:layout_height="84dp"
+    android:clickable="true"
+    android:clipChildren="true"
+    android:clipToPadding="false"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/ivProjectivyCardArtwork"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Kartu Aplikasi Projectivy"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/ic_nexfy_all_apps_tile" />
+
+    <View
+        android:id="@+id/viewProjectivyCardFocusBorder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+</FrameLayout>

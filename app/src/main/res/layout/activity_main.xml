@@ -1,0 +1,1010 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:keepScreenOn="true">
+
+    <!-- 0. Live Wallpaper dari Penyimpanan (Video .mp4/.webm/.mov & GIF .gif) -->
+    <FrameLayout
+        android:id="@+id/layoutLiveWallpaperMediaContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <SurfaceView
+            android:id="@+id/surfaceLiveWallpaper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/ivGifLiveWallpaper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <!-- Overlay Kecerahan / Brightness Dim -->
+        <View
+            android:id="@+id/viewLiveWallpaperBrightnessDim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:alpha="0" />
+    </FrameLayout>
+
+    <!-- 1. Live Wallpaper Bawaan Canvas (Api Unggun, Hujan Danau Toba, Galaksi, Awan Bergerak) -->
+    <com.example.LiveWallpaperCanvasView
+        android:id="@+id/liveWallpaperCanvasView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <!-- 2. Full Screen Wallpaper & Slideshow Layer (16:9 Center Crop) -->
+    <ImageView
+        android:id="@+id/ivWallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="Launcher Wallpaper Base" />
+
+    <ImageView
+        android:id="@+id/ivWallpaperNext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="0"
+        android:visibility="gone"
+        android:contentDescription="Launcher Wallpaper Transition Layer" />
+
+    <!-- Kontrol Manual Slideshow (Disembunyikan agar tampilan wallpaper beranda bersih tanpa Prev/Next) -->
+    <LinearLayout
+        android:id="@+id/layoutSlideshowControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="118dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/btnSlideshowPrev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/layoutSlideshowDots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/btnSlideshowNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- 3. POJOK KIRI ATAS: WIDGET CUACA & TANGGAL (Menggantikan posisi B866F LAUNCHER) -->
+    <LinearLayout
+        android:id="@+id/layoutTopLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="28dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- Kolom Teks di Kiri: Jam Digital Kecil HH : MM, Tanggal Indonesia, Cuaca -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Jam Digital Kecil Format 24 Jam (HH : MM) Sama dengan Indikator Kecepatan Jaringan -->
+            <TextView
+                android:id="@+id/tvDigitalClockTopLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_pill_focus_title"
+                android:elevation="3dp"
+                android:fontFamily="sans-serif-bold"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="5dp"
+                android:shadowColor="#EE000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="4"
+                android:text="00 : 00"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp" />
+
+            <!-- Baris 1: Tanggal Hari Ini (Contoh: "Senin, 17 Agustus 2026") -->
+            <TextView
+                android:id="@+id/tvWeatherDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:text="Senin, 17 Agustus 2026"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:shadowColor="#CC000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="6" />
+
+            <!-- Baris 2: Kecamatan Suhu Kondisi (Format: [Kecamatan] [Suhu]°C [Kondisi]) -->
+            <TextView
+                android:id="@+id/tvWeatherInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/poppins"
+                android:text="Memuat cuaca..."
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:shadowColor="#CC000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="6" />
+        </LinearLayout>
+
+        <!-- Animasi Ikon Cuaca Dinamis di Kanan Teks (Hujan, Cerah, Berawan, Petir, Kabut) -->
+        <com.example.WeatherAnimationView
+            android:id="@+id/weatherAnimationView"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="14dp" />
+    </LinearLayout>
+
+    <!-- 3. TOP CENTER: WIDGET JAM ANALOG (JARUM JAM, MENIT, DETIK + CUSTOM WALLPAPER DIAL) -->
+    <com.example.AnalogClockView
+        android:id="@+id/analogClock"
+        android:layout_width="86dp"
+        android:layout_height="86dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <!-- 4. TOP RIGHT: Kecepatan Jaringan + 4 Ikon (Mic, WiFi, Bluetooth, Gear) + Tooltip -->
+    <LinearLayout
+        android:id="@+id/layoutTopRightContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="44dp"
+        android:layout_marginTop="28dp"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/layoutTopRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Kecepatan Jaringan Real-Time di Samping Ikon Kanan -->
+            <TextView
+                android:id="@+id/tvNetworkSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_pill_focus_title"
+                android:elevation="3dp"
+                android:fontFamily="sans-serif-bold"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="5dp"
+                android:shadowColor="#EE000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="4"
+                android:text="↓ 0.0 KB/s"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp" />
+
+            <!-- 1. Ikon Mic untuk Pencarian Suara (Bentuk Bulat Glassmorphism) -->
+            <ImageButton
+                android:id="@+id/btnMic"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_top_icon_round_focus"
+                android:contentDescription="Pencarian Suara"
+                android:elevation="3dp"
+                android:focusable="true"
+                android:nextFocusDown="@id/rvBottomApps"
+                android:padding="9dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_mic" />
+
+            <!-- 2. Ikon WiFi Status -->
+            <ImageButton
+                android:id="@+id/btnWifi"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bg_top_icon_focus"
+                android:contentDescription="WiFi"
+                android:elevation="3dp"
+                android:focusable="true"
+                android:nextFocusDown="@id/rvBottomApps"
+                android:padding="9dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_wifi" />
+
+            <!-- 3. Ikon Bluetooth Status dengan Titik Indikator Biru -->
+            <FrameLayout
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginEnd="16dp">
+
+                <ImageButton
+                    android:id="@+id/btnBluetooth"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/bg_top_icon_focus"
+                    android:contentDescription="Bluetooth"
+                    android:elevation="3dp"
+                    android:focusable="true"
+                    android:nextFocusDown="@id/rvBottomApps"
+                    android:padding="9dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_bluetooth" />
+
+                <View
+                    android:id="@+id/viewBluetoothDot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="top|end"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/bg_blue_indicator_dot"
+                    android:elevation="4dp"
+                    android:visibility="visible" />
+            </FrameLayout>
+
+            <!-- 4. Ikon Gear / Pengaturan Launcher -->
+            <ImageButton
+                android:id="@+id/btnSettings"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="@drawable/bg_top_icon_focus"
+                android:contentDescription="Pengaturan Launcher"
+                android:elevation="3dp"
+                android:focusable="true"
+                android:nextFocusDown="@id/rvBottomApps"
+                android:padding="9dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_settings" />
+        </LinearLayout>
+
+        <!-- Tooltip Kecil di Bawah Ikon Saat Difokuskan Remote -->
+        <TextView
+            android:id="@+id/tvTopIconTooltip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_pill_focus_title"
+            android:fontFamily="sans-serif-bold"
+            android:text="Pengaturan Launcher"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- FOOTBALL CENTER: SLIM VERTICAL FROSTED GLASS WIDGET (LEFT SIDE) -->
+    <LinearLayout
+        android:id="@+id/cardFootballSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutTopLeft"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <!-- 1. SLIM VERTICAL FROSTED CONTAINER (THE 4 LEAGUES) -->
+        <LinearLayout
+            android:id="@+id/layoutFootballCenterSidebar"
+            android:layout_width="236dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_football_frosted_glass"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <!-- Header Title: JADWAL LIGA + Tombol Refresh Kecil di Kanan Judul -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:contentDescription="Football Icon"
+                        android:src="@drawable/ic_football" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="JADWAL LIGA"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnRefreshFootballSchedule"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_top_icon_focus"
+                    android:contentDescription="Refresh Jadwal"
+                    android:focusable="true"
+                    android:padding="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_settings" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="Pilih liga untuk melihat jadwal sepekan"
+                android:textColor="#94A3B8"
+                android:textSize="9sp"
+                android:layout_marginBottom="6dp" />
+
+            <!-- The 4 Leagues Vertical Items Sesuai Urutan: -->
+            <!-- 1. English Premier League -->
+            <LinearLayout
+                android:id="@+id/itemLeagueEpl"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_league_item_focus"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <ImageView
+                    android:id="@+id/ivLogoEpl"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="EPL Logo"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_football" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-bold"
+                        android:maxLines="1"
+                        android:text="English Premier League"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="Inggris"
+                        android:textColor="#94A3B8"
+                        android:textSize="8sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="›"
+                    android:textColor="#88FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 2. Serie A -->
+            <LinearLayout
+                android:id="@+id/itemLeagueSerieA"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_league_item_focus"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <ImageView
+                    android:id="@+id/ivLogoSerieA"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="Serie A Logo"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_football" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-bold"
+                        android:maxLines="1"
+                        android:text="Serie A"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="Italia"
+                        android:textColor="#94A3B8"
+                        android:textSize="8sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="›"
+                    android:textColor="#88FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 3. La Liga -->
+            <LinearLayout
+                android:id="@+id/itemLeagueLaLiga"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_league_item_focus"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <ImageView
+                    android:id="@+id/ivLogoLaLiga"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="La Liga Logo"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_football" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-bold"
+                        android:maxLines="1"
+                        android:text="La Liga"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="Spanyol"
+                        android:textColor="#94A3B8"
+                        android:textSize="8sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="›"
+                    android:textColor="#88FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 4. UEFA Champions League -->
+            <LinearLayout
+                android:id="@+id/itemLeagueUcl"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@drawable/bg_league_item_focus"
+                android:clickable="true"
+                android:focusable="true"
+                android:nextFocusDown="@id/rvBottomApps"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <ImageView
+                    android:id="@+id/ivLogoUcl"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="UCL Logo"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_football" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-bold"
+                        android:maxLines="1"
+                        android:text="UEFA Champions League"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="Eropa"
+                        android:textColor="#94A3B8"
+                        android:textSize="8sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="›"
+                    android:textColor="#88FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 2. EXPANDED SCHEDULE PANEL (DISPLAYS MATCHES ON THE SAME DAY) -->
+        <LinearLayout
+            android:id="@+id/layoutLeagueSchedulePanel"
+            android:layout_width="430dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bg_football_frosted_glass"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <!-- Header Panel: Back Button & League Title -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="6dp">
+
+                <!-- Tombol Kembali (Back) -->
+                <LinearLayout
+                    android:id="@+id/btnBackFromSchedule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_league_item_focus"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="‹"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="sans-serif-bold"
+                        android:text="Kembali (Back)"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <!-- League Name & Logo -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ivScheduleLeagueLogo"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_football" />
+
+                    <TextView
+                        android:id="@+id/tvScheduleLeagueName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:fontFamily="sans-serif-black"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        tools:text="Premier League" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <!-- Subheader: Tanggal Pertandingan & Zona WIB -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#331E293B"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:id="@+id/tvScheduleDateTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:fontFamily="sans-serif-bold"
+                    android:textColor="#A855F7"
+                    android:textSize="10sp"
+                    tools:text="HARI INI (WIB)" />
+
+                <TextView
+                    android:id="@+id/tvScheduleMatchCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:fontFamily="sans-serif"
+                    android:textColor="#CBD5E1"
+                    android:textSize="10sp"
+                    tools:text="4 Pertandingan" />
+            </RelativeLayout>
+
+            <!-- Loading Spinner -->
+            <ProgressBar
+                android:id="@+id/pbScheduleLoading"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:indeterminate="true"
+                android:indeterminateTint="#A855F7"
+                android:visibility="gone" />
+
+            <!-- Empty State -->
+            <TextView
+                android:id="@+id/tvScheduleEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="Tidak ada pertandingan terdekat"
+                android:textColor="#94A3B8"
+                android:textSize="11sp"
+                android:visibility="gone" />
+
+            <!-- Daftar Pertandingan Hari Tersebut -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvFootballMatches"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                tools:listitem="@layout/item_schedule_match" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 5. BARIS KARTU APLIKASI HORIZONTAL DI BAWAH LAYAR (DIDUKUNG SISTEM TEMA) -->
+    <TextView
+        android:id="@+id/tvThemeShelfHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rvBottomApps"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/poppins"
+        android:shadowColor="#CC000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="4"
+        android:text="Aplikasi"
+        android:textColor="#E2E8F0"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <com.example.TvHorizontalRecyclerView
+        android:id="@+id/rvBottomApps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:descendantFocusability="afterDescendants"
+        android:nextFocusUp="@id/itemLeagueUcl"
+        android:overScrollMode="never" />
+
+    <!-- 5B. GOOGLE TV THEME HOST (Hanya di-inflate saat Google TV Theme + Use Home Screen Default = ON) -->
+    <ViewStub
+        android:id="@+id/stubGoogleTvHost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/googleTvHostRoot"
+        android:layout="@layout/layout_google_tv_host" />
+
+    <!-- 5C. NEXFY LAUNCHER THEME HOST (Hanya di-inflate saat Nexfy Theme + Use Home Screen Default = ON) -->
+    <ViewStub
+        android:id="@+id/stubNexfyHost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/nexfyHostRoot"
+        android:layout="@layout/layout_nexfy_host" />
+
+    <!-- 5D. PROJECTIVY LAUNCHER THEME HOST (Hanya di-inflate saat Projectivy Theme + Use Home Screen Default = ON) -->
+    <ViewStub
+        android:id="@+id/stubProjectivyHost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/projectivyHostRoot"
+        android:layout="@layout/layout_projectivy_host" />
+
+    <!-- 5E. ATV LAUNCHER THEME HOST (Hanya di-inflate saat ATV Theme + Use Home Screen Default = ON) -->
+    <ViewStub
+        android:id="@+id/stubAtvHost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/atvHostRoot"
+        android:layout="@layout/layout_atv_host" />
+
+    <!-- 5F. WOLF LAUNCHER THEME HOST (Hanya di-inflate saat Wolf Theme + Use Home Screen Default = ON) -->
+    <ViewStub
+        android:id="@+id/stubWolfHost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inflatedId="@+id/wolfHostRoot"
+        android:layout="@layout/layout_wolf_host" />
+
+    <!-- 6. PANEL SIDEBAR KANAN (Meluncur dari Kanan 0.3s) -->
+    <FrameLayout
+        android:id="@+id/layoutSidebarScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000"
+        android:clickable="true"
+        android:focusable="false"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/layoutRightSidebar"
+            android:layout_width="390dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="@drawable/bg_sidebar_panel"
+            android:clickable="true"
+            android:focusable="false"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="24dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="24dp">
+
+            <!-- Sidebar Header -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/tvSidebarTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/poppins"
+                    android:text="Pengaturan Launcher"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/btnCloseSidebar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_top_icon_focus"
+                    android:contentDescription="Tutup"
+                    android:focusable="true"
+                    android:padding="8dp"
+                    android:rotation="45"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_add" />
+            </RelativeLayout>
+
+            <!-- Scrollable Dynamic Content Container for Settings, WiFi, Bluetooth -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fadeScrollbars="false"
+                android:fillViewport="true">
+
+                <LinearLayout
+                    android:id="@+id/layoutSidebarContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- 7. POPUP PENCARIAN SUARA (Voice Search Overlay) -->
+    <FrameLayout
+        android:id="@+id/layoutVoiceSearchOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:clickable="true"
+        android:focusable="false"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="520dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_sidebar_panel"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="28dp">
+
+            <TextView
+                android:id="@+id/tvVoiceTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:text="Pencarian Suara"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvVoicePrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Mendengarkan... Silakan bicara"
+                android:textColor="#94A3B8"
+                android:textSize="13sp" />
+
+            <!-- Animated Google TV Voice Wave -->
+            <com.example.VoiceWaveView
+                android:id="@+id/voiceWaveView"
+                android:layout_width="160dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp" />
+
+            <TextView
+                android:id="@+id/tvVoiceResultText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#4D1E293B"
+                android:fontFamily="sans-serif-bold"
+                android:gravity="center"
+                android:minHeight="58dp"
+                android:padding="14dp"
+                android:text="Katakan nama aplikasi yang ingin dibuka"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnStartListening"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:backgroundTint="#3B82F6"
+                    android:focusable="true"
+                    android:fontFamily="sans-serif-bold"
+                    android:text="Mulai Bicara"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnUseRemoteVoice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="10dp"
+                    android:backgroundTint="#0F766E"
+                    android:focusable="true"
+                    android:fontFamily="sans-serif-bold"
+                    android:text="Mic Remote TV"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnCloseVoiceSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="10dp"
+                    android:backgroundTint="#334155"
+                    android:focusable="true"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Tutup"
+                    android:textColor="#CBD5E1"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</RelativeLayout>

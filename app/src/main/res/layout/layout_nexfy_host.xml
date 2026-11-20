@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nexfyHostRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- Scrim halus hanya di tepi atas dan bawah agar wallpaper tengah tetap luas dan bersih -->
+    <View
+        android:id="@+id/viewNexfyTopScrim"
+        android:layout_width="match_parent"
+        android:layout_height="145dp"
+        android:layout_gravity="top"
+        android:background="@drawable/bg_nexfy_top_scrim" />
+
+    <View
+        android:id="@+id/viewNexfyBottomScrim"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_nexfy_bottom_scrim" />
+
+    <!-- Overlay ringan khusus halaman All Apps agar wallpaper tetap terlihat jelas di belakang grid -->
+    <View
+        android:id="@+id/viewNexfyAllAppsScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#4D050A14"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <!-- ============================================== -->
+        <!-- 1. TOP SYSTEM & STATUS BAR (Referensi 1 & 2)   -->
+        <!-- ============================================== -->
+        <RelativeLayout
+            android:id="@+id/layoutNexfyTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingStart="36dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="36dp"
+            android:paddingBottom="8dp">
+
+            <!-- Kiri Atas: Avatar Profil (Mode Home) atau Judul "All Apps" (Mode All Apps) -->
+            <FrameLayout
+                android:id="@+id/btnNexfyProfile"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:contentDescription="Profil Nexfy Launcher"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Ikon Profil"
+                    android:src="@drawable/ic_person" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutNexfyAllAppsTitleArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvNexfyAllAppsHeaderTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-black"
+                    android:shadowColor="#CC000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="4"
+                    android:text="All Apps"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tvNexfyAllAppsCountBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="#CBD5E1"
+                    android:textSize="11sp"
+                    tools:text="24 aplikasi" />
+            </LinearLayout>
+
+            <!-- Kanan Atas: Bluetooth, Wi-Fi, Notifikasi, Pencarian, Pengaturan, Cuaca & Jam -->
+            <LinearLayout
+                android:id="@+id/layoutNexfyStatusGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btnNexfyBluetooth"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:contentDescription="Bluetooth"
+                    android:focusable="true"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_bluetooth" />
+
+                <ImageButton
+                    android:id="@+id/btnNexfyWifi"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:contentDescription="Wi-Fi"
+                    android:focusable="true"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_wifi" />
+
+                <ImageButton
+                    android:id="@+id/btnNexfyNotifications"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:contentDescription="Notifikasi Sistem"
+                    android:focusable="true"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_notifications" />
+
+                <ImageButton
+                    android:id="@+id/btnNexfySearch"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:contentDescription="Pencarian"
+                    android:focusable="true"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_search" />
+
+                <ImageButton
+                    android:id="@+id/btnNexfySettings"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:clickable="true"
+                    android:contentDescription="Pengaturan Launcher"
+                    android:focusable="true"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_settings" />
+
+                <!-- Pill Cuaca + Jam di Kanan Atas sesuai Referensi 1 & 2 -->
+                <LinearLayout
+                    android:id="@+id/layoutNexfyWeatherClockCapsule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="12dp">
+
+                    <LinearLayout
+                        android:id="@+id/btnNexfyWeather"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingEnd="10dp">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginEnd="5dp"
+                            android:contentDescription="Ikon Cuaca"
+                            android:src="@drawable/ic_weather_cloud" />
+
+                        <TextView
+                            android:id="@+id/tvNexfyWeather"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="sans-serif-medium"
+                            android:maxLines="1"
+                            android:maxWidth="150dp"
+                            android:text="Memuat cuaca..."
+                            android:textColor="#F1F5F9"
+                            android:textSize="11sp"
+                            tools:text="29°C" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/viewNexfyStatusDividerDot"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/bg_blue_indicator_dot" />
+
+                    <TextView
+                        android:id="@+id/tvNexfyClock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="00.00"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        tools:text="15.04" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- ============================================== -->
+        <!-- 2. HALAMAN NEXFY HOME SCREEN (Referensi 1)     -->
+        <!-- ============================================== -->
+        <LinearLayout
+            android:id="@+id/layoutNexfyHomeBody"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical">
+
+            <!-- Bar Navigasi Kategori Horizontal (8 Kategori Persis Referensi 1) -->
+            <LinearLayout
+                android:id="@+id/layoutNexfyCategoryBar"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="36dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" />
+
+            <!-- Ruang Wallpaper Luas di Tengah Layar -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Bagian Bawah: Tombol + Pin Cepat, Judul "Semua Aplikasi", dan Deretan Kartu Landscape -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingBottom="18dp">
+
+                <ImageButton
+                    android:id="@+id/btnNexfyQuickPin"
+                    android:layout_width="34dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:contentDescription="Sematkan Aplikasi Favorit"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_add" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginEnd="36dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvNexfyShelfTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-bold"
+                        android:shadowColor="#DD000000"
+                        android:shadowDx="1"
+                        android:shadowDy="2"
+                        android:shadowRadius="5"
+                        android:text="Semua Aplikasi"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tvNexfyShelfHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:fontFamily="sans-serif"
+                        android:shadowColor="#CC000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="3"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp"
+                        tools:text="•  18 aplikasi" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvNexfyHomeApps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="36dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="36dp"
+                    android:paddingBottom="6dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ============================================== -->
+        <!-- 3. HALAMAN NEXFY ALL APPS (Referensi 2)        -->
+        <!-- ============================================== -->
+        <LinearLayout
+            android:id="@+id/layoutNexfyAllAppsBody"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingStart="36dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="36dp"
+            android:paddingBottom="18dp"
+            android:visibility="gone">
+
+            <!-- Bar Pencarian Inline Opsional (Aktif saat tombol Cari ditekan) -->
+            <LinearLayout
+                android:id="@+id/layoutNexfySearchBar"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginBottom="10dp"
+                android:background="#AA0F172A"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="8dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="Cari"
+                    android:src="@drawable/ic_search" />
+
+                <EditText
+                    android:id="@+id/etNexfySearch"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Ketik nama aplikasi yang dicari..."
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#94A3B8"
+                    android:textSize="12sp" />
+
+                <ImageButton
+                    android:id="@+id/btnNexfyClearSearch"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Hapus Pencarian"
+                    android:focusable="true"
+                    android:padding="4dp"
+                    android:rotation="45"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_add"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/btnNexfyVoiceSearch"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Pencarian Suara"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_mic" />
+
+                <ImageButton
+                    android:id="@+id/btnNexfyCloseSearch"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Tutup Pencarian"
+                    android:focusable="true"
+                    android:padding="4dp"
+                    android:rotation="45"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_add" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvNexfyAllAppsEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="28dp"
+                android:text="Tidak ada aplikasi yang cocok dengan pencarian Anda."
+                android:textColor="#E2E8F0"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <!-- Grid 6 Kolom di 1920x1080 dengan Kartu Landscape & Wallpaper Terlihat di Belakang -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvNexfyAllAppsGrid"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingTop="6dp"
+                android:paddingBottom="12dp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

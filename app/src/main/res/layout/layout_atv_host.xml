@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/atvHostRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- Scrim ringan agar wallpaper utama tetap terbuka luas & terbaca di atas/bawah -->
+    <View
+        android:id="@+id/viewAtvTopScrim"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        android:layout_gravity="top"
+        android:background="@drawable/bg_projectivy_top_scrim" />
+
+    <View
+        android:id="@+id/viewAtvBottomScrim"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_projectivy_bottom_scrim" />
+
+    <!-- Scrim sangat tipis pada mode Applications agar wallpaper tetap terlihat jelas di belakang grid -->
+    <View
+        android:id="@+id/viewAtvAppsScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#44050914"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <!-- ============================================== -->
+        <!-- 1. TOP BAR: Emblem / Judul Applications (kiri) + Status/Jam/Tanggal (kanan) -->
+        <!-- ============================================== -->
+        <RelativeLayout
+            android:id="@+id/layoutAtvTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingStart="44dp"
+            android:paddingTop="18dp"
+            android:paddingEnd="44dp"
+            android:paddingBottom="6dp">
+
+            <!-- Kiri Atas: Emblem ATV (Mode Home) atau Judul Applications (Mode Applications) -->
+            <LinearLayout
+                android:id="@+id/layoutAtvTopLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btnAtvEmblem"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:contentDescription="ATV Launcher Applications"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_atv_emblem" />
+
+                <LinearLayout
+                    android:id="@+id/layoutAtvAppsHeaderGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvAtvTopAppsTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:shadowColor="#DD000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="4"
+                        android:text="Applications"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/tvAtvTopAppsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="sans-serif"
+                        android:shadowColor="#CC000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="3"
+                        android:textColor="#CBD5E1"
+                        android:textSize="11sp"
+                        tools:text="• 24 aplikasi" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Kanan Atas: Ikon Sistem + Cuaca Aero TV + Jam Besar + Tanggal Tumpuk (Sesuai Referensi) -->
+            <LinearLayout
+                android:id="@+id/layoutAtvTopRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btnAtvBluetooth"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:contentDescription="Bluetooth"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_bluetooth" />
+
+                <ImageButton
+                    android:id="@+id/btnAtvWifi"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="6dp"
+                    android:clickable="true"
+                    android:contentDescription="Wi-Fi"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_wifi" />
+
+                <!-- Cuaca Nyata Aero TV -->
+                <LinearLayout
+                    android:id="@+id/btnAtvWeather"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="6dp"
+                    android:clickable="true"
+                    android:contentDescription="Cuaca Lokasi Perangkat"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp">
+
+                    <TextView
+                        android:id="@+id/tvAtvWeatherBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="sans-serif-bold"
+                        android:maxLines="1"
+                        android:maxWidth="136dp"
+                        android:shadowColor="#CC000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="3"
+                        android:text="--°"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        tools:text="Cibinong • 29°C" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnAtvSearch"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:contentDescription="Cari Aplikasi"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_search" />
+
+                <ImageButton
+                    android:id="@+id/btnAtvCardSettings"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="4dp"
+                    android:clickable="true"
+                    android:contentDescription="Pengaturan Kartu ATV"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_atv_tune" />
+
+                <ImageButton
+                    android:id="@+id/btnAtvSettings"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="12dp"
+                    android:clickable="true"
+                    android:contentDescription="Pengaturan Launcher"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_settings" />
+
+                <!-- Jam Besar ala Referensi ATV (12:57) -->
+                <TextView
+                    android:id="@+id/tvAtvClock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:shadowColor="#DD000000"
+                    android:shadowDx="1"
+                    android:shadowDy="2"
+                    android:shadowRadius="5"
+                    android:text="00:00"
+                    android:textColor="#FFFFFF"
+                    android:textSize="26sp"
+                    tools:text="12:57" />
+
+                <!-- Tanggal Tumpuk Uppercase di Samping Jam (SELASA / 26 MEI 2026) -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="7dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvAtvDayUpper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:letterSpacing="0.06"
+                        android:shadowColor="#DD000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="3"
+                        android:textColor="#E2E8F0"
+                        android:textSize="9sp"
+                        tools:text="SELASA" />
+
+                    <TextView
+                        android:id="@+id/tvAtvDateUpper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:letterSpacing="0.04"
+                        android:shadowColor="#DD000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="3"
+                        android:textColor="#CBD5E1"
+                        android:textSize="9sp"
+                        tools:text="26 MEI 2026" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- ============================================== -->
+        <!-- 2. ATV HOME SCREEN (Referensi Screenshot: Wallpaper Luas di Atas + Grid Applications di Bawah) -->
+        <!-- ============================================== -->
+        <LinearLayout
+            android:id="@+id/layoutAtvHomeBody"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical">
+
+            <!-- Area Wallpaper Penuh Tanpa Hambatan di Bagian Atas -->
+            <Space
+                android:id="@+id/spaceAtvHomeWallpaper"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.92" />
+
+            <!-- Bagian Bawah: Header "Applications" + Grid Kartu Landscape 6 Kolom -->
+            <LinearLayout
+                android:id="@+id/layoutAtvHomeBottomSection"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.08"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingStart="44dp"
+                android:paddingEnd="44dp"
+                android:paddingBottom="10dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false">
+
+                    <TextView
+                        android:id="@+id/tvAtvHomeSectionTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="sans-serif"
+                        android:shadowColor="#EE000000"
+                        android:shadowDx="1"
+                        android:shadowDy="2"
+                        android:shadowRadius="5"
+                        android:text="Applications"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/btnAtvHomeFilterMode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:fontFamily="sans-serif-medium"
+                            android:paddingStart="10dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="4dp"
+                            android:text="★ Favorit &amp; Semua"
+                            android:textColor="#E2E8F0"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/btnAtvOpenAllApps"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:fontFamily="sans-serif-medium"
+                            android:paddingStart="10dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="4dp"
+                            android:text="Semua Aplikasi ▾"
+                            android:textColor="#E2E8F0"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvAtvHomeGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="6dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ============================================== -->
+        <!-- 3. HALAMAN FULL APPLICATIONS (Grid 6 Kolom Scrollable di Atas Wallpaper) -->
+        <!-- ============================================== -->
+        <LinearLayout
+            android:id="@+id/layoutAtvAppsBody"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingStart="44dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="44dp"
+            android:paddingBottom="16dp"
+            android:visibility="gone">
+
+            <!-- Bar Pencarian Opsional -->
+            <LinearLayout
+                android:id="@+id/layoutAtvSearchBar"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="8dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="Cari"
+                    android:src="@drawable/ic_search" />
+
+                <EditText
+                    android:id="@+id/etAtvSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Cari aplikasi terpasang..."
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#94A3B8"
+                    android:textSize="12sp" />
+
+                <ImageButton
+                    android:id="@+id/btnAtvClearSearch"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Hapus"
+                    android:focusable="true"
+                    android:padding="4dp"
+                    android:rotation="45"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_add"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/btnAtvVoiceSearch"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Pencarian Suara"
+                    android:focusable="true"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_mic" />
+
+                <ImageButton
+                    android:id="@+id/btnAtvCloseSearch"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Tutup Pencarian"
+                    android:focusable="true"
+                    android:padding="4dp"
+                    android:rotation="45"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_add" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvAtvAppsEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="28dp"
+                android:text="Tidak ada aplikasi yang cocok."
+                android:textColor="#E2E8F0"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvAtvAppsGrid"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingTop="8dp"
+                android:paddingBottom="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

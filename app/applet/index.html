@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Aero TV Launcher - STB ZTE B866F</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --accent: #10b981;
+            --warning: #f59e0b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 720px;
+            width: 100%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .dl-section {
+            text-align: center;
+            padding: 32px 20px;
+            border: 2px dashed rgba(96, 165, 250, 0.3);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            margin-bottom: 20px;
+        }
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 16px 36px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            transition: transform 0.2s, background 0.2s;
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        }
+        .file-info {
+            margin-top: 14px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .step-list {
+            margin-top: 16px;
+            list-style: none;
+            counter-reset: steps;
+        }
+        .step-list li {
+            position: relative;
+            padding-left: 36px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        .step-list li::before {
+            counter-increment: steps;
+            content: counter(steps);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .code-box {
+            background: #090d16;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #38bdf8;
+            overflow-x: auto;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .alert-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 14px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        .alert-title {
+            font-weight: 700;
+            color: var(--warning);
+            margin-bottom: 4px;
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .link-item {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+        .link-item a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .link-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="badge">ZTE STB B866F Optimized</span>
+            <h1>Aero TV Launcher</h1>
+            <p class="subtitle">Update Terbaru: Jam Analog, Logo Klub Kickoff, & Solusi Aksebilitas Greyed Out</p>
+        </div>
+
+        <div class="card">
+            <div class="dl-section">
+                <a href="/b866f-launcher.apk" class="btn-download" download>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download APK (26 MB)
+                </a>
+                <div class="file-info">
+                    Nama File: <strong>b866f-launcher.apk</strong> &bull; Versi Recompiled &bull; Format: Android APK
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <div class="alert-title">⚠️ Kenapa Tombol Aksesibilitas Abu-Abu / Off di STB?</div>
+                <div>Pada Android TV / STB modern (Android 10, 11, 12+), Google menerapkan fitur <strong>"Restricted Settings" (Setelan Dibatasi)</strong> untuk aplikasi yang diinstall di luar Play Store (Sideload APK).</div>
+            </div>
+
+            <h3 style="font-size: 16px; margin-bottom: 8px;">Cara Membuka Kunci Opsi Abu-Abu (Menjadi Biru / On):</h3>
+            <ol class="step-list">
+                <li>Buka <strong>Setelan STB &rarr; Aplikasi &rarr; Lihat semua aplikasi &rarr; Aero TV</strong>.</li>
+                <li>Scroll ke paling bawah atau klik menu titik tiga di kanan atas.</li>
+                <li>Pilih <strong>"Izinkan setelan terbatas" (Allow restricted settings)</strong> lalu masukkan PIN/Verifikasi.</li>
+                <li>Kembali ke <strong>Setelan &rarr; Preferensi Perangkat &rarr; Aksesibilitas &rarr; Aero TV</strong>.</li>
+                <li>Sekarang toggle <strong>Aktifkan</strong> sudah bisa digeser menjadi <strong>BIRU (ON)</strong> tanpa kembali mati lagi!</li>
+            </ol>
+        </div>
+
+        <div class="card">
+            <h3 style="font-size: 16px; margin-bottom: 12px;">Link Unduhan Alternatif</h3>
+            <div class="links-grid">
+                <div class="link-item">
+                    <span>Direct Link Utama (Browser HP / Laptop / STB):</span>
+                    <a href="/b866f-launcher.apk" download>Download Langsung</a>
+                </div>
+                <div class="link-item">
+                    <span>File Explorer AI Studio:</span>
+                    <span style="color: #94a3b8;">Klik kanan <code>b866f-launcher.apk</code> di panel kiri &rarr; Download</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h4 style="font-size: 14px; margin-bottom: 6px;">Perintah ADB (Opsional jika menggunakan USB Debugging / Wi-Fi):</h4>
+                <div class="code-box">
+adb install -r b866f-launcher.apk<br>
+adb shell pm grant com.example android.permission.WRITE_SECURE_SETTINGS<br>
+adb shell settings put secure enabled_accessibility_services com.example/com.example.LauncherAccessibilityService
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

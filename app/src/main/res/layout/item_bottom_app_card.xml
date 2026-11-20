@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardBottomApp"
+    android:layout_width="224px"
+    android:layout_height="96px"
+    android:clickable="true"
+    android:focusable="true"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- Latar belakang kaca gelap transparan dengan ikon di kiri dan nama di kanan (sesuai referensi) -->
+    <LinearLayout
+        android:id="@+id/layoutBottomCardContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16px"
+        android:paddingTop="10px"
+        android:paddingEnd="14px"
+        android:paddingBottom="10px">
+
+        <ImageView
+            android:id="@+id/ivBottomAppIcon"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:adjustViewBounds="true"
+            android:contentDescription="Ikon Aplikasi"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/ic_settings" />
+
+        <TextView
+            android:id="@+id/tvBottomAppName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12px"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start|center_vertical"
+            android:includeFontPadding="false"
+            android:maxLines="2"
+            android:shadowColor="#CC000000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="4"
+            android:text="Aplikasi"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20px" />
+    </LinearLayout>
+
+    <!-- Outline Fokus Cyan/Turquoise Tebal Seperti Gambar Referensi -->
+    <View
+        android:id="@+id/viewBottomFocusBorder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+</FrameLayout>

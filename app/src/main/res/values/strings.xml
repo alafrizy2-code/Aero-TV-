@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Aero TV</string>
+    <string name="accessibility_service_label">B866F Launcher Default (Aero TV)</string>
+    <string name="accessibility_service_description">Aktifkan layanan ini agar tombol HOME pada remote STB B866F otomatis membuka launcher ini sebagai default.</string>
+    <string name="accessibility_service_summary">Pengontrol tombol Home &amp; Layar Utama STB B866F</string>
+    <string name="write_settings_permission_label">Izin Mengubah Setelan Sistem</string>
+</resources>

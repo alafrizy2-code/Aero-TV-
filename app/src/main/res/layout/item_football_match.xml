@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemMatchContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/bg_match_row"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingTop="5dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="5dp">
+
+    <!-- 1. Logo Kompetisi / Liga (UCL, UEL, EPL, La Liga, dll) -->
+    <ImageView
+        android:id="@+id/ivLeagueLogo"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="League Logo"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_football" />
+
+    <!-- 2. Format: [Nama Klub 1] <Logo Klub 1> VS <Logo Klub 2> [Nama Klub 2] -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- Nama Klub 1 (Contoh: M U) -->
+        <TextView
+            android:id="@+id/tvHomeTeam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:fontFamily="sans-serif-black"
+            android:text="M U"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <!-- Logo Klub 1 (Contoh: Logo Manchester United) -->
+        <ImageView
+            android:id="@+id/ivHomeLogo"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="5dp"
+            android:contentDescription="Home Club Logo"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_football" />
+
+        <!-- VS -->
+        <TextView
+            android:id="@+id/tvVs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="sans-serif-black"
+            android:text="VS"
+            android:textColor="#F59E0B"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <!-- Logo Klub 2 (Contoh: Logo Arsenal) -->
+        <ImageView
+            android:id="@+id/ivAwayLogo"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="Away Club Logo"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_football" />
+
+        <!-- Nama Klub 2 (Contoh: ARS) -->
+        <TextView
+            android:id="@+id/tvAwayTeam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:text="ARS"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- 3. Jam Kick-off: (20:30 WIB) -->
+    <TextView
+        android:id="@+id/tvMatchTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="(20:30 WIB)"
+        android:textColor="#38BDF8"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
+    <!-- 4. Status LIVE / Skor (Jika ada) -->
+    <TextView
+        android:id="@+id/tvMatchStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/bg_match_status"
+        android:paddingStart="4dp"
+        android:paddingTop="1dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="1dp"
+        android:text="LIVE"
+        android:textColor="#EF4444"
+        android:textSize="8sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</LinearLayout>

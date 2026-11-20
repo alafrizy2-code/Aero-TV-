@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_football_frosted_glass"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Top Header Bar: Folder Name & Action Buttons -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:contentDescription="Folder Icon"
+                android:src="@drawable/ic_folder" />
+
+            <TextView
+                android:id="@+id/tvDialogFolderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="sans-serif-black"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="🎬 Streaming &amp; TV" />
+
+            <TextView
+                android:id="@+id/tvDialogFolderCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="#409333EA"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:textColor="#C084FC"
+                android:textSize="11sp"
+                android:fontFamily="sans-serif-bold"
+                tools:text="4 Aplikasi" />
+        </LinearLayout>
+
+        <!-- Right Side Actions: Rename, Delete, Close -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnRenameFolder"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_top_icon_focus"
+                android:focusable="true"
+                android:fontFamily="sans-serif-medium"
+                android:text="✏️ Ubah Nama"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/btnDeleteFolder"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_top_icon_focus"
+                android:focusable="true"
+                android:fontFamily="sans-serif-medium"
+                android:text="🗑️ Hapus"
+                android:textAllCaps="false"
+                android:textColor="#FCA5A5"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/btnCloseFolderDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_top_icon_focus"
+                android:focusable="true"
+                android:fontFamily="sans-serif-bold"
+                android:text="✕ Tutup"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Subtitle instruction -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tekan OK pada aplikasi untuk membuka, atau tekan tombol '+' untuk menambah aplikasi baru"
+        android:textColor="#94A3B8"
+        android:textSize="11sp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Horizontal List of Apps + Plus (+) Button -->
+    <com.example.TvHorizontalRecyclerView
+        android:id="@+id/rvFolderApps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:overScrollMode="never"
+        tools:listitem="@layout/item_app" />
+
+</LinearLayout>

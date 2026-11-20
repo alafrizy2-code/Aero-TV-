@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardBottomApp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:focusable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <!-- Kotak Kartu Utama (Bentuk & Ukuran Diatur Dinamis oleh ThemeRenderer: Pill / Lingkaran Penuh / Banner 16:9 / Squircle) -->
+    <FrameLayout
+        android:id="@+id/cardBoxContainer"
+        android:layout_width="224px"
+        android:layout_height="96px"
+        android:clipChildren="true"
+        android:clipToPadding="false">
+
+        <!-- Layer Banner / Kartu Bulat Penuh (Projectivy 16:9, Google TV Bulat Penuh, ATV, Wolf) -->
+        <ImageView
+            android:id="@+id/ivFullCardBanner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Kartu Aplikasi"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <!-- Konten Kartu Klasik (Khusus Default Aero TV & Nexfy Squircle) -->
+        <LinearLayout
+            android:id="@+id/layoutBottomCardContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="16px"
+            android:paddingTop="10px"
+            android:paddingEnd="14px"
+            android:paddingBottom="10px">
+
+            <FrameLayout
+                android:id="@+id/layoutIconFrame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/ivBottomAppIcon"
+                    android:layout_width="46px"
+                    android:layout_height="46px"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="Ikon Aplikasi"
+                    android:scaleType="fitCenter"
+                    tools:src="@drawable/ic_settings" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvBottomAppName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12px"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="start|center_vertical"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                android:shadowColor="#CC000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="4"
+                android:text="Aplikasi"
+                android:textColor="#FFFFFFFF"
+                android:textSize="20px" />
+        </LinearLayout>
+
+        <!-- Kilau Atas Halus (Untuk Nexfy & Wolf) -->
+        <View
+            android:id="@+id/viewTopSheen"
+            android:layout_width="match_parent"
+            android:layout_height="20px"
+            android:layout_gravity="top"
+            android:visibility="gone" />
+
+        <!-- Garis / Ring Fokus Dinamis -->
+        <View
+            android:id="@+id/viewBottomFocusBorder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <!-- Label Di Bawah Kartu (Untuk Google TV Bulat & Projectivy saat Fokus) -->
+    <TextView
+        android:id="@+id/tvBelowCardName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8px"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:shadowColor="#EE000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:text="Aplikasi"
+        android:textColor="#E2E8F0"
+        android:textSize="17px"
+        android:visibility="gone" />
+
+</LinearLayout>

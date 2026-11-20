@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/googleTvHostRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- Scrim halus agar wallpaper pribadi pengguna tetap terlihat di belakang namun teks Google TV tetap jernih -->
+    <View
+        android:id="@+id/viewGoogleTvWallpaperScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_google_tv_wallpaper_scrim" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical">
+
+        <!-- ============================================== -->
+        <!-- 1. TOP NAVIGATION BAR (Sesuai Referensi 1 & 2) -->
+        <!-- ============================================== -->
+        <RelativeLayout
+            android:id="@+id/layoutGtvTopBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingStart="36dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="36dp"
+            android:paddingBottom="8dp">
+
+            <LinearLayout
+                android:id="@+id/layoutGtvTopLeftNav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <!-- Profil Bulat -->
+                <FrameLayout
+                    android:id="@+id/btnGtvProfile"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_marginEnd="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <TextView
+                        android:id="@+id/tvGtvProfileInitial"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="sans-serif-bold"
+                        android:gravity="center"
+                        android:text="A"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp" />
+                </FrameLayout>
+
+                <!-- Tombol Pencarian -->
+                <ImageButton
+                    android:id="@+id/btnGtvSearch"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_marginEnd="10dp"
+                    android:clickable="true"
+                    android:contentDescription="Cari Aplikasi"
+                    android:focusable="true"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_search" />
+
+                <!-- Pill Tabs: Beranda & Aplikasi -->
+                <LinearLayout
+                    android:id="@+id/layoutGtvTabsPill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="#550F172A"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="3dp">
+
+                    <TextView
+                        android:id="@+id/tabGtvHome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="sans-serif-bold"
+                        android:gravity="center"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:text="Beranda"
+                        android:textColor="#0F172A"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tabGtvApps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="4dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="sans-serif-bold"
+                        android:gravity="center"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:text="Aplikasi"
+                        android:textColor="#E2E8F0"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Tombol Wallpaper / Screensaver -->
+                <ImageButton
+                    android:id="@+id/btnGtvWallpaper"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:contentDescription="Pengaturan Wallpaper"
+                    android:focusable="true"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_wallpaper_photo" />
+
+                <!-- Tombol Pengaturan Launcher -->
+                <ImageButton
+                    android:id="@+id/btnGtvSettings"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:clickable="true"
+                    android:contentDescription="Pengaturan Launcher"
+                    android:focusable="true"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_settings" />
+            </LinearLayout>
+
+            <!-- Kanan Atas: Cuaca Ringkas + Jam + Google TV -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical|end"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvGtvWeatherSummary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="14dp"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:shadowColor="#CC000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="4"
+                    android:textColor="#CBD5E1"
+                    android:textSize="11sp"
+                    tools:text="Jakarta • 29°C" />
+
+                <TextView
+                    android:id="@+id/tvGtvClockAndBrand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:shadowColor="#CC000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="4"
+                    android:text="00:00  |  Google TV"
+                    android:textColor="#F8FAFC"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- ============================================== -->
+        <!-- 2. HALAMAN BERANDA (Referensi 1)               -->
+        <!-- ============================================== -->
+        <ScrollView
+            android:id="@+id/scrollGtvHomePage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:fillViewport="false"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingBottom="16dp">
+
+                <!-- 2A. Banner Unggulan Lebar (Dari Aplikasi/Jadwal Nyata) -->
+                <FrameLayout
+                    android:id="@+id/cardGtvHeroBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="172dp"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="36dp"
+                    android:clickable="true"
+                    android:clipChildren="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/ivGtvHeroBackdrop"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Banner Unggulan"
+                        android:scaleType="centerCrop" />
+
+                    <!-- Gradient Kiri-ke-Kanan agar teks banner selalu tajam -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_google_tv_hero_gradient" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="24dp"
+                        android:paddingTop="14dp"
+                        android:paddingEnd="24dp"
+                        android:paddingBottom="14dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/ivGtvHeroAppIcon"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:contentDescription="Logo Unggulan"
+                                    android:scaleType="fitCenter" />
+
+                                <TextView
+                                    android:id="@+id/tvGtvHeroBadge"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:fontFamily="sans-serif-bold"
+                                    android:text="Sorotan Terpasang"
+                                    android:textColor="#38BDF8"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvGtvHeroTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif-black"
+                                android:maxLines="1"
+                                android:shadowColor="#EE000000"
+                                android:shadowDx="2"
+                                android:shadowDy="2"
+                                android:shadowRadius="6"
+                                android:textColor="#FFFFFF"
+                                android:textSize="26sp"
+                                tools:text="YouTube TV" />
+
+                            <TextView
+                                android:id="@+id/tvGtvHeroSubtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
+                                android:ellipsize="end"
+                                android:fontFamily="sans-serif"
+                                android:maxLines="2"
+                                android:textColor="#CBD5E1"
+                                android:textSize="12sp"
+                                tools:text="Video &amp; Streaming • Tekan OK untuk membuka • ◀ ▶ untuk geser sorotan" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tvGtvHeroActionPill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="#E6FFFFFF"
+                                    android:fontFamily="sans-serif-bold"
+                                    android:paddingStart="14dp"
+                                    android:paddingTop="5dp"
+                                    android:paddingEnd="14dp"
+                                    android:paddingBottom="5dp"
+                                    android:text="Buka Sekarang"
+                                    android:textColor="#0F172A"
+                                    android:textSize="11sp" />
+
+                                <TextView
+                                    android:id="@+id/tvGtvHeroCounter"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:textColor="#94A3B8"
+                                    android:textSize="11sp"
+                                    tools:text="1 / 5  •  ◀ Geser ▶" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/viewGtvHeroFocusBorder"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+                <!-- 2B. Baris Rekomendasi Konten Nyata ("Pilihan teratas untuk Anda") -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="6dp"
+                    android:fontFamily="sans-serif-bold"
+                    android:shadowColor="#CC000000"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="4"
+                    android:text="Pilihan teratas untuk Anda"
+                    android:textColor="#F1F5F9"
+                    android:textSize="13sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGtvTopPicks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="36dp"
+                    android:paddingEnd="36dp" />
+
+                <!-- 2C. Baris Aplikasi Pengguna Ikon Bulat ("Aplikasi Anda") -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="36dp"
+                    android:layout_marginBottom="6dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-bold"
+                        android:shadowColor="#CC000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="4"
+                        android:text="Aplikasi Anda"
+                        android:textColor="#F1F5F9"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvGtvAppsHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="sans-serif"
+                        android:text="•  Tekan OK buka aplikasi  •  Pilih tab Aplikasi untuk semua"
+                        android:textColor="#94A3B8"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGtvYourApps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="36dp"
+                    android:paddingEnd="36dp" />
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- ============================================== -->
+        <!-- 3. HALAMAN APLIKASI (Referensi 2)              -->
+        <!-- ============================================== -->
+        <ScrollView
+            android:id="@+id/scrollGtvAppsPage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:paddingStart="36dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="36dp"
+                android:paddingBottom="24dp">
+
+                <!-- Header Banner & Kolom Pencarian Aplikasi -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-black"
+                            android:text="Aplikasi &amp; Pengelolaan Terpasang"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/tvGtvAppsCountSubtitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="sans-serif"
+                            android:text="Daftar dinamis dari aplikasi yang terpasang di perangkat"
+                            android:textColor="#94A3B8"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <!-- Kolom Pencarian Aplikasi + Mic -->
+                    <LinearLayout
+                        android:layout_width="320dp"
+                        android:layout_height="38dp"
+                        android:background="#661E293B"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="6dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="Ikon Cari"
+                            android:src="@drawable/ic_search" />
+
+                        <EditText
+                            android:id="@+id/etGtvAppsSearch"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:hint="Cari aplikasi terpasang..."
+                            android:imeOptions="actionSearch"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:textColor="#FFFFFF"
+                            android:textColorHint="#94A3B8"
+                            android:textSize="12sp" />
+
+                        <ImageButton
+                            android:id="@+id/btnGtvAppsClearSearch"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="@android:color/transparent"
+                            android:contentDescription="Hapus Pencarian"
+                            android:focusable="true"
+                            android:padding="4dp"
+                            android:rotation="45"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_add"
+                            android:visibility="gone" />
+
+                        <ImageButton
+                            android:id="@+id/btnGtvAppsVoiceSearch"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:background="@android:color/transparent"
+                            android:contentDescription="Pencarian Suara"
+                            android:focusable="true"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_mic" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Kartu Aplikasi Unggulan Landscape -->
+                <TextView
+                    android:id="@+id/tvGtvFeaturedAppsHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:fontFamily="sans-serif-bold"
+                    android:text="Aplikasi Unggulan"
+                    android:textColor="#E2E8F0"
+                    android:textSize="12sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGtvFeaturedLandscape"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never" />
+
+                <!-- Deretan Aplikasi Pengguna Ikon Bulat -->
+                <TextView
+                    android:id="@+id/tvGtvAppsCircleRowHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:fontFamily="sans-serif-bold"
+                    android:text="Akses Cepat (Ikon Bulat)"
+                    android:textColor="#E2E8F0"
+                    android:textSize="12sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGtvAppsCircleQuick"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never" />
+
+                <!-- Bagian Kategori Aplikasi -->
+                <LinearLayout
+                    android:id="@+id/layoutGtvCategoryChips"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" />
+
+                <!-- Grid Kartu Landscape Installed Apps (Referensi 2) -->
+                <TextView
+                    android:id="@+id/tvGtvInstalledHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="sans-serif-bold"
+                    android:text="Aplikasi Terpasang"
+                    android:textColor="#F8FAFC"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvGtvAppsEmptySearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:text="Tidak ada aplikasi yang cocok dengan pencarian Anda."
+                    android:textColor="#94A3B8"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvGtvInstalledGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</FrameLayout>

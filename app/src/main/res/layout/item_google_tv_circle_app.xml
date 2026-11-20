@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardGoogleTvCircleRoot"
+    android:layout_width="76dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="14dp"
+    android:clickable="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:focusable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <!-- Lingkaran Penuh Tanpa Kotak Latar Belakang (Google TV Style) -->
+    <FrameLayout
+        android:id="@+id/frameGoogleTvCircle"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:clipChildren="true"
+        android:clipToPadding="false">
+
+        <ImageView
+            android:id="@+id/ivGoogleTvCircleIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Ikon Aplikasi"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/ic_apps_grid" />
+
+        <View
+            android:id="@+id/viewGoogleTvCircleFocusRing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tvGoogleTvCircleLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:maxLines="1"
+        android:shadowColor="#EE000000"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="4"
+        android:textColor="#E2E8F0"
+        android:textSize="11sp"
+        tools:text="YouTube" />
+
+</LinearLayout>

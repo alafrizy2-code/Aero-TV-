@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Google TV Focus Highlight untuk Slot Kosong -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="15px" />
+            <solid android:color="#401E293B" />
+            <stroke android:width="3px" android:color="#FFFFFF" />
+        </shape>
+    </item>
+    <!-- Slot Kosong Normal: Garis Putus-Putus Transparan Halus 15px Rounded -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="15px" />
+            <solid android:color="#1A000000" />
+            <stroke
+                android:width="1.5px"
+                android:color="#33FFFFFF"
+                android:dashWidth="6px"
+                android:dashGap="4px" />
+        </shape>
+    </item>
+</selector>
