@@ -24,8 +24,8 @@ import kotlin.math.roundToInt
 /**
  * ThemeAndIconSettingsDialog:
  * Halaman Pengaturan Terpadu: Pengaturan Launcher -> Tampilan Layar -> Tema & Ikon.
- * Menyediakan daftar 5 tema + Default Theme, pratinjau langsung, tombol Download Theme
- * (katalog ikon online + cache lokal offline), tombol Apply Theme tanpa restart, dan Restore Default.
+ * Menyediakan daftar 5 tema + Default Theme, pratinjau langsung, toggle Use Home Screen Default (ON/OFF),
+ * tombol Download Theme (katalog ikon online + cache lokal offline), Apply Theme tanpa restart, dan Restore Default.
  */
 class ThemeAndIconSettingsDialog(
     private val context: Context,
@@ -35,12 +35,25 @@ class ThemeAndIconSettingsDialog(
     private val onClosed: () -> Unit
 ) : Dialog(context) {
 
+    private data class ThemeCardUiHolder(
+        val theme: LauncherThemeDefinition,
+        val cardView: LinearLayout,
+        val badgeView: TextView,
+        val applyBackground: (Boolean) -> Unit
+    )
+
     private val density = context.resources.displayMetrics.density
     private val themes = ThemeManager.getAllThemes()
     private var selectedTheme: LauncherThemeDefinition = ThemeManager.getActiveTheme(context)
     private var isDownloading = false
+    private val themeCardHolders = mutableListOf<ThemeCardUiHolder>()
 
-    private val listContainer = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
+    private val listContainer = LinearLayout(context).apply {
+        orientation = LinearLayout.VERTICAL
+        clipChildren = false
+        clipToPadding = false
+        setPadding(dp(2), dp(2), dp(2), dp(2))
+    }
     private lateinit var previewView: ThemePreviewView
     private lateinit var tvSelectedTitle: TextView
     private lateinit var tvSelectedSubtitle: TextView
@@ -66,8 +79,11 @@ class ThemeAndIconSettingsDialog(
         val root = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             setBackgroundColor(Color.parseColor("#F20B1120"))
-            setPadding(dp(36), dp(22), dp(36), dp(22))
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            setPadding(dp(32), dp(18), dp(32), dp(18))
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
         }
 
         // Top Bar
@@ -76,7 +92,7 @@ class ThemeAndIconSettingsDialog(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                bottomMargin = dp(16)
+                bottomMargin = dp(12)
             }
         }
         val titleCol = LinearLayout(context).apply {
@@ -92,22 +108,23 @@ class ThemeAndIconSettingsDialog(
         titleCol.addView(TextView(context).apply {
             text = "Tampilan Layar • Tema & Ikon"
             setTextColor(Color.WHITE)
-            textSize = 20f
+            textSize = 19f
             typeface = Typeface.DEFAULT_BOLD
         })
         titleCol.addView(TextView(context).apply {
-            text = "Pilih tema untuk mengubah kartu Home Screen, App Drawer, paket ikon, layout, & efek fokus"
+            text = "Klik tema untuk langsung menerapkan, lalu atur Use Home Screen Default (ON = tata letak tema, OFF = Aero TV)"
             setTextColor(Color.parseColor("#94A3B8"))
-            textSize = 12f
+            textSize = 11f
         })
         topBar.addView(titleCol)
 
         val btnClose = createActionButton("✕ Tutup", Color.parseColor("#334155")) {
             dismiss()
         }.apply {
+            id = View.generateViewId()
             layoutParams = RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
-                dp(38)
+                dp(36)
             ).apply {
                 addRule(RelativeLayout.ALIGN_PARENT_END)
                 addRule(RelativeLayout.CENTER_VERTICAL)
@@ -116,7 +133,7 @@ class ThemeAndIconSettingsDialog(
         topBar.addView(btnClose)
         root.addView(topBar)
 
-        // Body 2 Kolom: Kiri = Daftar Tema, Kanan = Preview & Aksi
+        // Body 2 Kolom: Kiri = Daftar Tema, Kanan = Preview & Aksi (ScrollView + Footer Tombol Tersemat)
         val body = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             layoutParams = LinearLayout.LayoutParams(
@@ -127,57 +144,75 @@ class ThemeAndIconSettingsDialog(
         }
 
         val leftScroll = ScrollView(context).apply {
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 0.42f).apply {
-                marginEnd = dp(20)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 0.41f).apply {
+                marginEnd = dp(16)
             }
             isFocusable = false
+            isVerticalScrollBarEnabled = false
             addView(listContainer)
         }
         body.addView(leftScroll)
 
-        // Panel Kanan: Preview & Detail
+        // Panel Kanan: Preview & Detail (Scrollable agar tidak pernah terpotong di TV 1080p/720p) + Footer Tombol Aksi Permanen
         val rightPanel = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(20), dp(18), dp(20), dp(18))
+            setPadding(dp(18), dp(14), dp(18), dp(14))
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 cornerRadius = 14f * density
                 setColor(Color.parseColor("#CC111827"))
                 setStroke(dp(1), Color.parseColor("#33FFFFFF"))
             }
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 0.58f)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 0.59f)
+        }
+
+        val detailsScroll = ScrollView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0,
+                1f
+            )
+            isFocusable = false
+            isVerticalScrollBarEnabled = false
+        }
+        val detailsContent = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
 
         previewView = ThemePreviewView(context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(190)
+                dp(124)
             ).apply {
-                bottomMargin = dp(12)
+                bottomMargin = dp(8)
             }
         }
-        rightPanel.addView(previewView)
+        detailsContent.addView(previewView)
 
         tvSelectedTitle = TextView(context).apply {
             setTextColor(Color.WHITE)
-            textSize = 18f
+            textSize = 17f
             typeface = Typeface.DEFAULT_BOLD
         }
         tvSelectedSubtitle = TextView(context).apply {
             setTextColor(Color.parseColor("#38BDF8"))
-            textSize = 12f
+            textSize = 11.5f
             typeface = Typeface.DEFAULT_BOLD
-            setPadding(0, dp(2), 0, dp(6))
+            setPadding(0, dp(2), 0, dp(4))
         }
         tvSelectedDesc = TextView(context).apply {
             setTextColor(Color.parseColor("#CBD5E1"))
-            textSize = 12f
-            setPadding(0, 0, 0, dp(8))
+            textSize = 11f
+            setPadding(0, 0, 0, dp(6))
         }
         tvSpecs = TextView(context).apply {
             setTextColor(Color.parseColor("#94A3B8"))
-            textSize = 11f
-            setPadding(dp(10), dp(8), dp(10), dp(8))
+            textSize = 10.5f
+            setPadding(dp(10), dp(6), dp(10), dp(6))
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 cornerRadius = 8f * density
@@ -187,14 +222,14 @@ class ThemeAndIconSettingsDialog(
         tvOfflineStatus = TextView(context).apply {
             textSize = 11f
             typeface = Typeface.DEFAULT_BOLD
-            setPadding(0, dp(8), 0, dp(4))
+            setPadding(0, dp(6), 0, dp(2))
         }
         pbDownload = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
             max = 100
             visibility = View.GONE
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(8)
+                dp(6)
             ).apply {
                 bottomMargin = dp(4)
             }
@@ -205,11 +240,11 @@ class ThemeAndIconSettingsDialog(
             visibility = View.GONE
         }
 
-        // Pengaturan Khusus Google TV Theme: Use Home Screen Default (ON / OFF)
+        // Pengaturan Khusus Home Screen Default per Tema (ON / OFF)
         cardGoogleTvHomeSetting = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(12), dp(10), dp(12), dp(10))
+            setPadding(dp(12), dp(8), dp(12), dp(8))
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 cornerRadius = 10f * density
@@ -220,7 +255,7 @@ class ThemeAndIconSettingsDialog(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                topMargin = dp(8)
+                topMargin = dp(6)
             }
             visibility = View.GONE
         }
@@ -234,43 +269,21 @@ class ThemeAndIconSettingsDialog(
         gtvSettingTextCol.addView(TextView(context).apply {
             text = "Use Home Screen Default"
             setTextColor(Color.WHITE)
-            textSize = 13f
+            textSize = 12.5f
             typeface = Typeface.DEFAULT_BOLD
         })
         tvGoogleTvHomeDesc = TextView(context).apply {
             setTextColor(Color.parseColor("#CBD5E1"))
-            textSize = 11f
+            textSize = 10.5f
         }
         gtvSettingTextCol.addView(tvGoogleTvHomeDesc)
         cardGoogleTvHomeSetting.addView(gtvSettingTextCol)
 
         btnToggleGoogleTvHomeDefault = createActionButton("ON", Color.parseColor("#16A34A")) {
-            val current = when (selectedTheme.id) {
-                ThemeId.NEXFY -> ThemeManager.isNexfyUseHomeScreenDefault(context)
-                ThemeId.PROJECTIVY -> ThemeManager.isProjectivyUseHomeScreenDefault(context)
-                ThemeId.ATV_LAUNCHER -> ThemeManager.isAtvUseHomeScreenDefault(context)
-                ThemeId.WOLF_LAUNCHER -> ThemeManager.isWolfUseHomeScreenDefault(context)
-                else -> ThemeManager.isGoogleTvUseHomeScreenDefault(context)
-            }
-            val next = !current
-            when (selectedTheme.id) {
-                ThemeId.NEXFY -> ThemeManager.setNexfyUseHomeScreenDefault(context, next)
-                ThemeId.PROJECTIVY -> ThemeManager.setProjectivyUseHomeScreenDefault(context, next)
-                ThemeId.ATV_LAUNCHER -> ThemeManager.setAtvUseHomeScreenDefault(context, next)
-                ThemeId.WOLF_LAUNCHER -> ThemeManager.setWolfUseHomeScreenDefault(context, next)
-                else -> ThemeManager.setGoogleTvUseHomeScreenDefault(context, next)
-            }
-            updateHomeDefaultSettingUi()
-            if (ThemeManager.getActiveThemeId(context) == selectedTheme.id) {
-                onThemeApplied(selectedTheme)
-            }
-            val statusStr = if (next) {
-                "ON (Tata Letak ${selectedTheme.name})"
-            } else {
-                "OFF (Tata Letak Dasar Aero TV)"
-            }
-            Toast.makeText(context, "Use Home Screen Default: $statusStr", Toast.LENGTH_SHORT).show()
+            toggleHomeScreenDefaultForSelectedTheme()
         }.apply {
+            id = View.generateViewId()
+            tag = "btn_toggle_home_default"
             layoutParams = LinearLayout.LayoutParams(dp(84), dp(36))
         }
         cardGoogleTvHomeSetting.addView(btnToggleGoogleTvHomeDefault)
@@ -280,17 +293,19 @@ class ThemeAndIconSettingsDialog(
             Color.parseColor("#1D4ED8")
         ) {
             AtvCardSettingsDialog(context) {
+                val applied = ThemeManager.setActiveTheme(context, ThemeId.ATV_LAUNCHER)
+                selectedTheme = applied
+                onThemeApplied(applied)
+                refreshThemeListBadgesAndBorders()
                 updateDetailsPanel()
-                if (ThemeManager.getActiveThemeId(context) == ThemeId.ATV_LAUNCHER) {
-                    onThemeApplied(selectedTheme)
-                }
             }.show()
         }.apply {
+            id = View.generateViewId()
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(38)
+                dp(36)
             ).apply {
-                topMargin = dp(8)
+                topMargin = dp(6)
             }
             visibility = View.GONE
         }
@@ -300,60 +315,72 @@ class ThemeAndIconSettingsDialog(
             Color.parseColor("#0284C7")
         ) {
             WolfDisplaySettingsDialog(context) {
+                val applied = ThemeManager.setActiveTheme(context, ThemeId.WOLF_LAUNCHER)
+                selectedTheme = applied
+                onThemeApplied(applied)
+                refreshThemeListBadgesAndBorders()
                 updateDetailsPanel()
-                if (ThemeManager.getActiveThemeId(context) == ThemeId.WOLF_LAUNCHER) {
-                    onThemeApplied(selectedTheme)
-                }
             }.show()
         }.apply {
+            id = View.generateViewId()
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(38)
+                dp(36)
             ).apply {
-                topMargin = dp(8)
+                topMargin = dp(6)
             }
             visibility = View.GONE
         }
 
-        rightPanel.addView(tvSelectedTitle)
-        rightPanel.addView(tvSelectedSubtitle)
-        rightPanel.addView(tvSelectedDesc)
-        rightPanel.addView(tvSpecs)
-        rightPanel.addView(cardGoogleTvHomeSetting)
-        rightPanel.addView(btnAtvCardSettings)
-        rightPanel.addView(btnWolfDisplaySettings)
-        rightPanel.addView(tvOfflineStatus)
-        rightPanel.addView(pbDownload)
-        rightPanel.addView(tvDownloadProgress)
+        detailsContent.addView(tvSelectedTitle)
+        detailsContent.addView(tvSelectedSubtitle)
+        detailsContent.addView(tvSelectedDesc)
+        detailsContent.addView(tvSpecs)
+        detailsContent.addView(cardGoogleTvHomeSetting)
+        detailsContent.addView(btnAtvCardSettings)
+        detailsContent.addView(btnWolfDisplaySettings)
+        detailsContent.addView(tvOfflineStatus)
+        detailsContent.addView(pbDownload)
+        detailsContent.addView(tvDownloadProgress)
+        detailsScroll.addView(detailsContent)
+        rightPanel.addView(detailsScroll)
 
-        // Spacer
-        rightPanel.addView(View(context).apply {
-            layoutParams = LinearLayout.LayoutParams(0, 0, 1f)
-        })
+        // Baris Tombol Aksi (Selalu terlihat di bawah panel kanan tanpa pernah terpotong)
+        val actionFooter = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = dp(8)
+            }
+        }
 
-        // Baris Tombol Aksi
         val actionRow1 = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                bottomMargin = dp(8)
+                bottomMargin = dp(6)
             }
         }
         btnDownloadTheme = createActionButton("⬇ Download Theme", Color.parseColor("#0284C7")) {
             startThemeDownload()
         }.apply {
-            layoutParams = LinearLayout.LayoutParams(0, dp(42), 1f).apply { marginEnd = dp(8) }
+            id = View.generateViewId()
+            layoutParams = LinearLayout.LayoutParams(0, dp(38), 1f).apply { marginEnd = dp(8) }
         }
         btnApplyTheme = createActionButton("✓ Apply Theme", Color.parseColor("#16A34A")) {
-            applySelectedTheme()
+            applySelectedThemeAndClose()
         }.apply {
-            layoutParams = LinearLayout.LayoutParams(0, dp(42), 1f)
+            id = View.generateViewId()
+            tag = "btn_apply_theme"
+            layoutParams = LinearLayout.LayoutParams(0, dp(38), 1f)
         }
         actionRow1.addView(btnDownloadTheme)
         actionRow1.addView(btnApplyTheme)
-        rightPanel.addView(actionRow1)
+        actionFooter.addView(actionRow1)
 
         val actionRow2 = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -366,21 +393,27 @@ class ThemeAndIconSettingsDialog(
             val defaultTheme = ThemeManager.restoreDefaultTheme(context)
             selectedTheme = defaultTheme
             onThemeApplied(defaultTheme)
-            rebuildThemeList()
+            refreshThemeListBadgesAndBorders()
             updateDetailsPanel()
             Toast.makeText(context, "Default Theme (Aero TV) dipulihkan!", Toast.LENGTH_SHORT).show()
         }.apply {
-            layoutParams = LinearLayout.LayoutParams(0, dp(40), 1f).apply { marginEnd = dp(8) }
+            id = View.generateViewId()
+            tag = "btn_restore_default"
+            layoutParams = LinearLayout.LayoutParams(0, dp(36), 1f).apply { marginEnd = dp(8) }
         }
         btnPreviewDrawer = createActionButton("📱 Buka App Drawer", Color.parseColor("#6D28D9")) {
+            val applied = ThemeManager.setActiveTheme(context, selectedTheme.id)
+            onThemeApplied(applied)
             dismiss()
             onOpenAppDrawer()
         }.apply {
-            layoutParams = LinearLayout.LayoutParams(0, dp(40), 1f)
+            id = View.generateViewId()
+            layoutParams = LinearLayout.LayoutParams(0, dp(36), 1f)
         }
         actionRow2.addView(btnRestoreDefault)
         actionRow2.addView(btnPreviewDrawer)
-        rightPanel.addView(actionRow2)
+        actionFooter.addView(actionRow2)
+        rightPanel.addView(actionFooter)
 
         body.addView(rightPanel)
         root.addView(body)
@@ -392,7 +425,8 @@ class ThemeAndIconSettingsDialog(
             setGravity(Gravity.CENTER)
         }
 
-        rebuildThemeList()
+        buildThemeListOnce()
+        wireFocusNavigation()
         updateDetailsPanel()
 
         setOnShowListener {
@@ -413,64 +447,25 @@ class ThemeAndIconSettingsDialog(
         }
     }
 
-    private fun rebuildThemeList() {
+    private fun buildThemeListOnce() {
         listContainer.removeAllViews()
-        val activeId = ThemeManager.getActiveThemeId(context)
+        themeCardHolders.clear()
 
         for (theme in themes) {
-            val isActive = (theme.id == activeId)
-            val isSelected = (theme.id == selectedTheme.id)
-            val isDownloaded = IconPackManager.isThemeDownloaded(context, theme.id)
-            val iconCount = IconPackManager.getDownloadedIconCount(context, theme.id)
+            lateinit var applyBgFn: (Boolean) -> Unit
 
             val itemCard = LinearLayout(context).apply {
+                id = View.generateViewId()
+                tag = "theme_card_${theme.id.name}"
                 orientation = LinearLayout.VERTICAL
-                setPadding(dp(14), dp(12), dp(14), dp(12))
+                setPadding(dp(12), dp(10), dp(12), dp(10))
                 isFocusable = true
                 isClickable = true
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    bottomMargin = dp(8)
-                }
-
-                val applyCardBg: (Boolean) -> Unit = { focused ->
-                    background = GradientDrawable().apply {
-                        shape = GradientDrawable.RECTANGLE
-                        cornerRadius = 10f * density
-                        setColor(
-                            when {
-                                focused -> Color.parseColor("#CC1E3A5F")
-                                isSelected -> Color.parseColor("#AA1E293B")
-                                else -> Color.parseColor("#880F172A")
-                            }
-                        )
-                        val strokeColor = when {
-                            focused -> Color.parseColor("#38BDF8")
-                            isActive -> Color.parseColor("#22C55E")
-                            isSelected -> Color.parseColor("#64748B")
-                            else -> Color.parseColor("#29FFFFFF")
-                        }
-                        setStroke(dp(if (focused) 2 else 1), strokeColor)
-                    }
-                }
-                applyCardBg(false)
-
-                onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-                    applyCardBg(hasFocus)
-                    v.animate().scaleX(if (hasFocus) 1.02f else 1.0f).scaleY(if (hasFocus) 1.02f else 1.0f).setDuration(100).start()
-                    if (hasFocus && selectedTheme.id != theme.id) {
-                        selectedTheme = theme
-                        updateDetailsPanel()
-                    }
-                }
-
-                setOnClickListener {
-                    selectedTheme = theme
-                    rebuildThemeList()
-                    updateDetailsPanel()
-                    btnApplyTheme.requestFocus()
+                    bottomMargin = dp(7)
                 }
             }
 
@@ -478,23 +473,10 @@ class ThemeAndIconSettingsDialog(
             val tvName = TextView(context).apply {
                 text = theme.name
                 setTextColor(Color.WHITE)
-                textSize = 14f
+                textSize = 13.5f
                 typeface = Typeface.DEFAULT_BOLD
             }
-            val badgeText = when {
-                isActive -> "AKTIF"
-                theme.id == ThemeId.DEFAULT -> "BAWAAN"
-                isDownloaded && iconCount > 0 -> "OFFLINE ($iconCount)"
-                else -> "ONLINE"
-            }
-            val badgeColor = when {
-                isActive -> Color.parseColor("#22C55E")
-                isDownloaded -> Color.parseColor("#38BDF8")
-                else -> Color.parseColor("#94A3B8")
-            }
             val tvBadge = TextView(context).apply {
-                text = badgeText
-                setTextColor(badgeColor)
                 textSize = 10f
                 typeface = Typeface.DEFAULT_BOLD
                 layoutParams = RelativeLayout.LayoutParams(
@@ -511,14 +493,152 @@ class ThemeAndIconSettingsDialog(
             val tvSub = TextView(context).apply {
                 text = theme.subtitle
                 setTextColor(Color.parseColor("#94A3B8"))
-                textSize = 11f
+                textSize = 10.5f
                 setPadding(0, dp(2), 0, 0)
             }
 
             itemCard.addView(topRow)
             itemCard.addView(tvSub)
+
+            applyBgFn = { focused ->
+                val isActive = (ThemeManager.getActiveThemeId(context) == theme.id)
+                val isSelected = (selectedTheme.id == theme.id)
+                itemCard.background = GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    cornerRadius = 10f * density
+                    setColor(
+                        when {
+                            focused -> Color.parseColor("#CC1E3A5F")
+                            isSelected -> Color.parseColor("#AA1E293B")
+                            else -> Color.parseColor("#880F172A")
+                        }
+                    )
+                    val strokeColor = when {
+                        focused -> Color.parseColor("#38BDF8")
+                        isActive -> Color.parseColor("#22C55E")
+                        isSelected -> Color.parseColor("#64748B")
+                        else -> Color.parseColor("#29FFFFFF")
+                    }
+                    setStroke(dp(if (focused) 2 else 1), strokeColor)
+                }
+            }
+
+            itemCard.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+                applyBgFn(hasFocus)
+                v.animate()
+                    .scaleX(if (hasFocus) 1.02f else 1.0f)
+                    .scaleY(if (hasFocus) 1.02f else 1.0f)
+                    .setDuration(90L)
+                    .start()
+                if (hasFocus && selectedTheme.id != theme.id) {
+                    selectedTheme = theme
+                    refreshThemeListBadgesAndBorders()
+                    updateDetailsPanel()
+                    wireLeftCardRightTargets(itemCard, theme)
+                }
+            }
+
+            itemCard.setOnClickListener {
+                // Memilih kartu tema langsung mengaktifkan & menerapkan tema + layout Home Screen-nya tanpa restart
+                val applied = ThemeManager.setActiveTheme(context, theme.id)
+                selectedTheme = applied
+                onThemeApplied(applied)
+                refreshThemeListBadgesAndBorders()
+                updateDetailsPanel()
+                wireLeftCardRightTargets(itemCard, applied)
+                Toast.makeText(context, "${applied.name} diterapkan!", Toast.LENGTH_SHORT).show()
+            }
+
             listContainer.addView(itemCard)
+            themeCardHolders.add(ThemeCardUiHolder(theme, itemCard, tvBadge, applyBgFn))
         }
+
+        refreshThemeListBadgesAndBorders()
+    }
+
+    private fun refreshThemeListBadgesAndBorders() {
+        val activeId = ThemeManager.getActiveThemeId(context)
+        for (holder in themeCardHolders) {
+            val isActive = (holder.theme.id == activeId)
+            val isDownloaded = IconPackManager.isThemeDownloaded(context, holder.theme.id)
+            val iconCount = IconPackManager.getDownloadedIconCount(context, holder.theme.id)
+            holder.badgeView.text = when {
+                isActive -> "AKTIF"
+                holder.theme.id == ThemeId.DEFAULT -> "BAWAAN"
+                isDownloaded && iconCount > 0 -> "OFFLINE ($iconCount)"
+                else -> "ONLINE"
+            }
+            holder.badgeView.setTextColor(
+                when {
+                    isActive -> Color.parseColor("#22C55E")
+                    isDownloaded -> Color.parseColor("#38BDF8")
+                    else -> Color.parseColor("#94A3B8")
+                }
+            )
+            holder.applyBackground(holder.cardView.isFocused)
+        }
+    }
+
+    private fun wireLeftCardRightTargets(card: View, theme: LauncherThemeDefinition) {
+        val rightTargetId = when {
+            theme.id != ThemeId.DEFAULT -> btnToggleGoogleTvHomeDefault.id
+            else -> btnApplyTheme.id
+        }
+        card.nextFocusRightId = rightTargetId
+        val selectedCardId = card.id
+        btnToggleGoogleTvHomeDefault.nextFocusLeftId = selectedCardId
+        btnAtvCardSettings.nextFocusLeftId = selectedCardId
+        btnWolfDisplaySettings.nextFocusLeftId = selectedCardId
+        btnDownloadTheme.nextFocusLeftId = selectedCardId
+        btnRestoreDefault.nextFocusLeftId = selectedCardId
+    }
+
+    private fun wireFocusNavigation() {
+        btnToggleGoogleTvHomeDefault.nextFocusDownId = btnApplyTheme.id
+        btnAtvCardSettings.nextFocusUpId = btnToggleGoogleTvHomeDefault.id
+        btnAtvCardSettings.nextFocusDownId = btnApplyTheme.id
+        btnWolfDisplaySettings.nextFocusUpId = btnToggleGoogleTvHomeDefault.id
+        btnWolfDisplaySettings.nextFocusDownId = btnApplyTheme.id
+
+        btnDownloadTheme.nextFocusRightId = btnApplyTheme.id
+        btnDownloadTheme.nextFocusDownId = btnRestoreDefault.id
+        btnApplyTheme.nextFocusLeftId = btnDownloadTheme.id
+        btnApplyTheme.nextFocusDownId = btnPreviewDrawer.id
+        btnRestoreDefault.nextFocusRightId = btnPreviewDrawer.id
+        btnRestoreDefault.nextFocusUpId = btnDownloadTheme.id
+        btnPreviewDrawer.nextFocusLeftId = btnRestoreDefault.id
+        btnPreviewDrawer.nextFocusUpId = btnApplyTheme.id
+    }
+
+    private fun toggleHomeScreenDefaultForSelectedTheme() {
+        val current = when (selectedTheme.id) {
+            ThemeId.NEXFY -> ThemeManager.isNexfyUseHomeScreenDefault(context)
+            ThemeId.PROJECTIVY -> ThemeManager.isProjectivyUseHomeScreenDefault(context)
+            ThemeId.ATV_LAUNCHER -> ThemeManager.isAtvUseHomeScreenDefault(context)
+            ThemeId.WOLF_LAUNCHER -> ThemeManager.isWolfUseHomeScreenDefault(context)
+            else -> ThemeManager.isGoogleTvUseHomeScreenDefault(context)
+        }
+        val next = !current
+        when (selectedTheme.id) {
+            ThemeId.NEXFY -> ThemeManager.setNexfyUseHomeScreenDefault(context, next)
+            ThemeId.PROJECTIVY -> ThemeManager.setProjectivyUseHomeScreenDefault(context, next)
+            ThemeId.ATV_LAUNCHER -> ThemeManager.setAtvUseHomeScreenDefault(context, next)
+            ThemeId.WOLF_LAUNCHER -> ThemeManager.setWolfUseHomeScreenDefault(context, next)
+            else -> ThemeManager.setGoogleTvUseHomeScreenDefault(context, next)
+        }
+        // Pastikan tema terpilih langsung menjadi tema aktif agar ON/OFF langsung mengubah Home Screen!
+        val applied = ThemeManager.setActiveTheme(context, selectedTheme.id)
+        selectedTheme = applied
+        refreshThemeListBadgesAndBorders()
+        updateDetailsPanel()
+        onThemeApplied(applied)
+
+        val statusStr = if (next) {
+            "ON (Tata Letak ${applied.name})"
+        } else {
+            "OFF (Kembali ke Tata Letak Default Aero TV)"
+        }
+        Toast.makeText(context, "${applied.name} • Use Home Screen Default: $statusStr", Toast.LENGTH_SHORT).show()
     }
 
     private fun updateDetailsPanel() {
@@ -564,7 +684,7 @@ class ThemeAndIconSettingsDialog(
 
         btnDownloadTheme.isEnabled = (t.id != ThemeId.DEFAULT && !isDownloading)
         btnDownloadTheme.alpha = if (t.id == ThemeId.DEFAULT) 0.45f else 1.0f
-        btnApplyTheme.text = if (isActive) "✓ Sedang Aktif" else "✓ Apply Theme"
+        btnApplyTheme.text = if (isActive) "✓ Terapkan & Tutup" else "✓ Apply Theme"
 
         if (t.id == ThemeId.GOOGLE_TV ||
             t.id == ThemeId.NEXFY ||
@@ -579,6 +699,23 @@ class ThemeAndIconSettingsDialog(
         }
         btnAtvCardSettings.visibility = if (t.id == ThemeId.ATV_LAUNCHER) View.VISIBLE else View.GONE
         btnWolfDisplaySettings.visibility = if (t.id == ThemeId.WOLF_LAUNCHER) View.VISIBLE else View.GONE
+
+        // Update D-Pad vertical chain sesuai tombol yang aktif
+        btnToggleGoogleTvHomeDefault.nextFocusDownId = when {
+            t.id == ThemeId.ATV_LAUNCHER -> btnAtvCardSettings.id
+            t.id == ThemeId.WOLF_LAUNCHER -> btnWolfDisplaySettings.id
+            else -> btnApplyTheme.id
+        }
+        btnApplyTheme.nextFocusUpId = when {
+            t.id == ThemeId.ATV_LAUNCHER -> btnAtvCardSettings.id
+            t.id == ThemeId.WOLF_LAUNCHER -> btnWolfDisplaySettings.id
+            t.id != ThemeId.DEFAULT -> btnToggleGoogleTvHomeDefault.id
+            else -> View.NO_ID
+        }
+        btnDownloadTheme.nextFocusUpId = btnApplyTheme.nextFocusUpId
+        themeCardHolders.firstOrNull { it.theme.id == t.id }?.cardView?.let { card ->
+            wireLeftCardRightTargets(card, t)
+        }
     }
 
     private fun updateHomeDefaultSettingUi() {
@@ -598,7 +735,7 @@ class ThemeAndIconSettingsDialog(
             ThemeId.PROJECTIVY -> if (isOn) {
                 "ON: Home Screen memakai tata letak Projectivy (Apps, sumber konten, Watch Next nyata, & jam kanan atas)."
             } else {
-                "OFF: Kembali ke tata letak dasar Pramana dengan gaya visual kartu, jarak, dan fokus Projectivy."
+                "OFF: Kembali ke tata letak dasar Aero TV dengan gaya visual kartu, jarak, dan fokus Projectivy."
             }
             ThemeId.ATV_LAUNCHER -> if (isOn) {
                 "ON: Home Screen memakai tata letak ATV (wallpaper penuh atas, grid 6 kolom kartu landscape berwarna)."
@@ -632,7 +769,7 @@ class ThemeAndIconSettingsDialog(
         btnToggleGoogleTvHomeDefault.background = if (btnToggleGoogleTvHomeDefault.isFocused) focusedBg else normalBg
         btnToggleGoogleTvHomeDefault.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             v.background = if (hasFocus) focusedBg else normalBg
-            v.animate().scaleX(if (hasFocus) 1.05f else 1.0f).scaleY(if (hasFocus) 1.05f else 1.0f).setDuration(100).start()
+            v.animate().scaleX(if (hasFocus) 1.05f else 1.0f).scaleY(if (hasFocus) 1.05f else 1.0f).setDuration(90L).start()
         }
     }
 
@@ -659,7 +796,7 @@ class ThemeAndIconSettingsDialog(
                 btnDownloadTheme.isEnabled = true
                 pbDownload.visibility = View.GONE
                 tvDownloadProgress.visibility = View.GONE
-                rebuildThemeList()
+                refreshThemeListBadgesAndBorders()
                 updateDetailsPanel()
                 val msg = if (success) {
                     "Unduhan selesai: $downloaded/$total ikon disimpan untuk penggunaan offline!"
@@ -671,19 +808,20 @@ class ThemeAndIconSettingsDialog(
         )
     }
 
-    private fun applySelectedTheme() {
+    private fun applySelectedThemeAndClose() {
         val applied = ThemeManager.setActiveTheme(context, selectedTheme.id)
         onThemeApplied(applied)
-        rebuildThemeList()
+        refreshThemeListBadgesAndBorders()
         updateDetailsPanel()
         Toast.makeText(context, "${applied.name} diterapkan tanpa restart!", Toast.LENGTH_SHORT).show()
+        dismiss()
     }
 
     private fun createActionButton(label: String, bgColor: Int, onClick: () -> Unit): Button {
         return Button(context).apply {
             text = label
             setTextColor(Color.WHITE)
-            textSize = 12f
+            textSize = 11.5f
             isAllCaps = false
             isFocusable = true
             isClickable = true
@@ -702,7 +840,7 @@ class ThemeAndIconSettingsDialog(
             background = normalBg
             onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
                 background = if (hasFocus) focusedBg else normalBg
-                v.animate().scaleX(if (hasFocus) 1.04f else 1.0f).scaleY(if (hasFocus) 1.04f else 1.0f).setDuration(100).start()
+                v.animate().scaleX(if (hasFocus) 1.04f else 1.0f).scaleY(if (hasFocus) 1.04f else 1.0f).setDuration(90L).start()
             }
             setOnClickListener { onClick() }
         }

@@ -216,6 +216,8 @@ class MainActivity : ComponentActivity() {
     private var activeThemeDialog: ThemeAndIconSettingsDialog? = null
     private var activeDrawerDialog: ThemeAppDrawerDialog? = null
     private var allInstalledApps = listOf<AppModel>()
+    private var lastAppliedThemeId: ThemeId? = null
+    private var lastAppliedCustomHome: Boolean? = null
 
     // Google TV Theme Host (Lazy ViewStub + Controller)
     private lateinit var stubGoogleTvHost: ViewStub
@@ -1089,7 +1091,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun closeSidebar() {
+    private fun closeSidebar(restoreFocus: Boolean = true) {
         if (!isSidebarOpen) return
         val slideWidth = 420f * resources.displayMetrics.density
         layoutSidebarScrim.animate().alpha(0f).setDuration(300).start()
@@ -1102,7 +1104,13 @@ class MainActivity : ComponentActivity() {
                 layoutSidebarScrim.alpha = 1f
                 isSidebarOpen = false
                 currentSidebarType = null
-                lastFocusedTopButton?.requestFocus()
+                if (restoreFocus) {
+                    if (isCustomHomeLayoutActive(this@MainActivity)) {
+                        focusPrimaryItemForActiveTheme()
+                    } else {
+                        lastFocusedTopButton?.requestFocus()
+                    }
+                }
             }
             .start()
     }
@@ -1297,7 +1305,7 @@ class MainActivity : ComponentActivity() {
                 ).show()
             })
             layoutSidebarContent.addView(createSidebarButton("⚙ Pengaturan Kartu ATV") {
-                closeSidebar()
+                closeSidebar(restoreFocus = false)
                 AtvCardSettingsDialog(ctx) {
                     applyActiveLauncherTheme(theme = currentTheme, focusFirst = false)
                 }.show()
@@ -1318,14 +1326,14 @@ class MainActivity : ComponentActivity() {
                 ).show()
             })
             layoutSidebarContent.addView(createSidebarButton("⚙ Pengaturan Tampilan Wolf") {
-                closeSidebar()
+                closeSidebar(restoreFocus = false)
                 WolfDisplaySettingsDialog(ctx) {
                     applyActiveLauncherTheme(theme = currentTheme, focusFirst = false)
                 }.show()
             })
         }
         layoutSidebarContent.addView(createSidebarButton("📱 Buka App Drawer (Tema Aktif)") {
-            closeSidebar()
+            closeSidebar(restoreFocus = false)
             openThemedAppDrawer()
         })
 
@@ -2397,6 +2405,40 @@ class MainActivity : ComponentActivity() {
             ThemeManager.shouldUseWolfHomeLayout(ctx)
     }
 
+    private fun focusPrimaryItemForActiveTheme() {
+        when {
+            ThemeManager.shouldUseGoogleTvHomeLayout(this) -> googleTvController?.focusPrimaryItem()
+            ThemeManager.shouldUseNexfyHomeLayout(this) -> nexfyController?.focusPrimaryItem()
+            ThemeManager.shouldUseProjectivyHomeLayout(this) -> projectivyController?.focusPrimaryItem()
+            ThemeManager.shouldUseAtvHomeLayout(this) -> atvController?.focusPrimaryItem()
+            ThemeManager.shouldUseWolfHomeLayout(this) -> wolfController?.focusPrimaryItem()
+            ::rvBottomApps.isInitialized -> rvBottomApps.post {
+                rvBottomApps.findViewHolderForAdapterPosition(0)?.itemView?.requestFocus()
+            }
+        }
+    }
+
+    private fun syncActiveThemeIfNeeded(focusFirst: Boolean = false) {
+        val expectedTheme = ThemeManager.getActiveTheme(this)
+        val expectedCustom = isCustomHomeLayoutActive(this)
+        val expectedViewVisible = when {
+            ThemeManager.shouldUseGoogleTvHomeLayout(this, expectedTheme) -> googleTvHostRoot?.visibility == View.VISIBLE
+            ThemeManager.shouldUseNexfyHomeLayout(this, expectedTheme) -> nexfyHostRoot?.visibility == View.VISIBLE
+            ThemeManager.shouldUseProjectivyHomeLayout(this, expectedTheme) -> projectivyHostRoot?.visibility == View.VISIBLE
+            ThemeManager.shouldUseAtvHomeLayout(this, expectedTheme) -> atvHostRoot?.visibility == View.VISIBLE
+            ThemeManager.shouldUseWolfHomeLayout(this, expectedTheme) -> wolfHostRoot?.visibility == View.VISIBLE
+            else -> ::rvBottomApps.isInitialized && rvBottomApps.visibility == View.VISIBLE &&
+                googleTvHostRoot?.visibility != View.VISIBLE &&
+                nexfyHostRoot?.visibility != View.VISIBLE &&
+                projectivyHostRoot?.visibility != View.VISIBLE &&
+                atvHostRoot?.visibility != View.VISIBLE &&
+                wolfHostRoot?.visibility != View.VISIBLE
+        }
+        if (lastAppliedThemeId != expectedTheme.id || lastAppliedCustomHome != expectedCustom || !expectedViewVisible) {
+            applyActiveLauncherTheme(theme = expectedTheme, focusFirst = focusFirst)
+        }
+    }
+
     private fun applyActiveLauncherTheme(
         theme: LauncherThemeDefinition = ThemeManager.getActiveTheme(this),
         focusFirst: Boolean = false
@@ -2406,6 +2448,9 @@ class MainActivity : ComponentActivity() {
         val useProjectivyHome = ThemeManager.shouldUseProjectivyHomeLayout(this, theme)
         val useAtvHome = ThemeManager.shouldUseAtvHomeLayout(this, theme)
         val useWolfHome = ThemeManager.shouldUseWolfHomeLayout(this, theme)
+        val isCustomLayout = useGoogleTvHome || useNexfyHome || useProjectivyHome || useAtvHome || useWolfHome
+        lastAppliedThemeId = theme.id
+        lastAppliedCustomHome = isCustomLayout
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
         if (useGoogleTvHome) {
@@ -2754,7 +2799,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun openThemeAndIconSettings() {
-        closeSidebar()
+        closeSidebar(restoreFocus = false)
         activeThemeDialog?.dismiss()
         val dlg = ThemeAndIconSettingsDialog(
             context = this,
@@ -2767,16 +2812,8 @@ class MainActivity : ComponentActivity() {
             },
             onClosed = {
                 activeThemeDialog = null
-                when {
-                    ThemeManager.shouldUseGoogleTvHomeLayout(this) -> googleTvController?.focusPrimaryItem()
-                    ThemeManager.shouldUseNexfyHomeLayout(this) -> nexfyController?.focusPrimaryItem()
-                    ThemeManager.shouldUseProjectivyHomeLayout(this) -> projectivyController?.focusPrimaryItem()
-                    ThemeManager.shouldUseAtvHomeLayout(this) -> atvController?.focusPrimaryItem()
-                    ThemeManager.shouldUseWolfHomeLayout(this) -> wolfController?.focusPrimaryItem()
-                    else -> rvBottomApps.post {
-                        rvBottomApps.findViewHolderForAdapterPosition(0)?.itemView?.requestFocus()
-                    }
-                }
+                syncActiveThemeIfNeeded(focusFirst = false)
+                focusPrimaryItemForActiveTheme()
             }
         )
         activeThemeDialog = dlg
@@ -2810,16 +2847,8 @@ class MainActivity : ComponentActivity() {
             onAppClick = { app -> launchApp(app) },
             onClosed = {
                 activeDrawerDialog = null
-                when {
-                    ThemeManager.shouldUseGoogleTvHomeLayout(this) -> googleTvController?.focusPrimaryItem()
-                    ThemeManager.shouldUseNexfyHomeLayout(this) -> nexfyController?.focusPrimaryItem()
-                    ThemeManager.shouldUseProjectivyHomeLayout(this) -> projectivyController?.focusPrimaryItem()
-                    ThemeManager.shouldUseAtvHomeLayout(this) -> atvController?.focusPrimaryItem()
-                    ThemeManager.shouldUseWolfHomeLayout(this) -> wolfController?.focusPrimaryItem()
-                    else -> rvBottomApps.post {
-                        rvBottomApps.requestFocus()
-                    }
-                }
+                syncActiveThemeIfNeeded(focusFirst = false)
+                focusPrimaryItemForActiveTheme()
             },
             onOpenSettings = { openSidebar(SidebarType.SETTINGS) },
             onOpenVoiceSearch = { openVoiceSearchOverlay() },
@@ -3263,8 +3292,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        syncActiveThemeIfNeeded(focusFirst = false)
+    }
+
     override fun onResume() {
         super.onResume()
+        syncActiveThemeIfNeeded(focusFirst = false)
         updateWeatherDate()
         refreshCurrentWifiStatus()
         fetchRealtimeWeather(forceRefresh = false)

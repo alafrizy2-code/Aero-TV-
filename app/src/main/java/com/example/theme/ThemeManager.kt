@@ -112,7 +112,7 @@ object ThemeManager {
         context.getSharedPreferences(PREFS_THEME, Context.MODE_PRIVATE)
             .edit()
             .putString(KEY_ACTIVE_THEME_ID, themeId.name)
-            .apply()
+            .commit()
         return ThemeRegistry.getThemeById(themeId)
     }
 
@@ -133,7 +133,7 @@ object ThemeManager {
         context.getSharedPreferences(PREFS_THEME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_GOOGLE_TV_HOME_DEFAULT, enabled)
-            .apply()
+            .commit()
     }
 
     /**
@@ -149,7 +149,7 @@ object ThemeManager {
         context.getSharedPreferences(PREFS_THEME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_NEXFY_HOME_DEFAULT, enabled)
-            .apply()
+            .commit()
     }
 
     /**
@@ -165,7 +165,7 @@ object ThemeManager {
         context.getSharedPreferences(PREFS_THEME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_PROJECTIVY_HOME_DEFAULT, enabled)
-            .apply()
+            .commit()
     }
 
     /**
@@ -181,7 +181,7 @@ object ThemeManager {
         context.getSharedPreferences(PREFS_THEME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_ATV_HOME_DEFAULT, enabled)
-            .apply()
+            .commit()
     }
 
     /**
@@ -225,7 +225,7 @@ object ThemeManager {
         context.getSharedPreferences(PREFS_THEME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_WOLF_HOME_DEFAULT, enabled)
-            .apply()
+            .commit()
     }
 
     /**
